@@ -14,6 +14,8 @@ namespace Space_Invaders.Models
 
         internal Size Size = new(24, 24);
 
+        private readonly int velocity = 12;
+
         internal Enemy(Point Position)
         {
             this.Position = Position;
@@ -23,13 +25,13 @@ namespace Space_Invaders.Models
         {
             if(MoveDirection == MoveDirection.Left)
             {
-                Position = new Point(Position.X - Size.Width - 4, Position.Y + Size.Height / 2);
+                Position = new Point(Position.X - velocity - 4, Position.Y + velocity);
             } else if(MoveDirection == MoveDirection.Right)
             {
-                Position = new Point(Position.X + Size.Width + 4, Position.Y + Size.Height / 2);
+                Position = new Point(Position.X + velocity + 4, Position.Y + velocity);
             } else
             {
-                Position = new Point(Position.X, Position.Y + Size.Height / 2);
+                Position = new Point(Position.X, Position.Y + velocity);
             }
         }
 
