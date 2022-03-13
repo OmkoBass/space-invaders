@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Code\\C#\\Space-Invaders\\Space-Invaders\\Space-Invaders.csproj",
+      "projectUniqueName": "D:\\Git\\space-invaders\\Space-Invaders\\Space-Invaders\\Space-Invaders.csproj",
       "projectName": "Space-Invaders",
-      "projectPath": "D:\\Code\\C#\\Space-Invaders\\Space-Invaders\\Space-Invaders.csproj",
+      "projectPath": "D:\\Git\\space-invaders\\Space-Invaders\\Space-Invaders\\Space-Invaders.csproj",
       "packagesPath": "C:\\Users\\Omer\\.nuget\\packages\\",
-      "outputPath": "D:\\Code\\C#\\Space-Invaders\\Space-Invaders\\obj\\",
+      "outputPath": "D:\\Git\\space-invaders\\Space-Invaders\\Space-Invaders\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Omer\\AppData\\Roaming\\NuGet\\NuGet.Config",

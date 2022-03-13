@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Mvgpj7EQNnqWWsBg4+CK2Ixhy+IAyj7kTW7L5PPXdmu5/gAj14CAdZQcqGdYNom6CftDciRlEqybO5KpCwkBDg==",
+  "dgSpecHash": "AU0pOyFLbXWGiOPnhFj1LjwAykMsXy11ZscwfP3woFTbIYutYJ90aE8JLGyxLPxf5grsLowZISIgSQ09g7R1cw==",
   "success": true,
-  "projectFilePath": "D:\\Code\\C#\\Space-Invaders\\Space-Invaders\\Space-Invaders.csproj",
+  "projectFilePath": "D:\\Git\\space-invaders\\Space-Invaders\\Space-Invaders\\Space-Invaders.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
