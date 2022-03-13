@@ -207,9 +207,29 @@ namespace Space_Invaders
             }
         }
 
+        private bool CheckVictory()
+        {
+            foreach(Enemy enemy in enemies)
+            {
+                if(enemy.IsDead == false)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         private void CollisionTimer_Tick(object sender, EventArgs e)
         {
             CheckCollisions();
+
+            if(CheckVictory() == true)
+            {
+                StopTimers();
+
+                MessageBox.Show("You win!");
+            }
         }
 
         private void Form1_KeyDown_1(object sender, KeyEventArgs e)
