@@ -12,6 +12,7 @@ namespace Space_Invaders
 
         Keys? key;
 
+        readonly Bitmap backgroundSprite = Resources.background;
         Bitmap enemySprite = Resources.enemy1;
 
         bool gameOver = false;
@@ -42,9 +43,9 @@ namespace Space_Invaders
 
             for (int i = 0; i < enemies.GetLength(0); i++)
             {
-                // random.Next(4) because i have 4 enemy sprites
+                // random.Next(3) because i have 3 enemy sprites
                 // to choose from
-                int randomNumber = random.Next(1, 4);
+                int randomNumber = random.Next(1, 3);
 
                 // This should be checked for null values
                 enemySprite = (Bitmap)resourceManager.GetObject($"enemy{randomNumber}");
@@ -97,7 +98,7 @@ namespace Space_Invaders
 
         private void GameArea_Paint(object sender, PaintEventArgs e)
         {
-            e.Graphics.FillRectangle(Brushes.LightGray, 0, 0, 760, 537);
+            e.Graphics.DrawImage(backgroundSprite, new Rectangle(0, 0, 760, 537));
 
             Player.Draw(e.Graphics);
 
