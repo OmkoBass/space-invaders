@@ -32,3 +32,4 @@ D:\Git\space-invaders\Space-Invaders\Space-Invaders\bin\Debug\net6.0-windows\Spa
 D:\Git\space-invaders\Space-Invaders\Space-Invaders\bin\Debug\net6.0-windows\Space-Invaders.pdb
 D:\Git\space-invaders\Space-Invaders\Space-Invaders\obj\Debug\net6.0-windows\Space-Invaders.genruntimeconfig.cache
 D:\Git\space-invaders\Space-Invaders\Space-Invaders\obj\Debug\net6.0-windows\ref\Space-Invaders.dll
+D:\Git\space-invaders\Space-Invaders\Space-Invaders\obj\Debug\net6.0-windows\Space_Invaders.Resources.resources
