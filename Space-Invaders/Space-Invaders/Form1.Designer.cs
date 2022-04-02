@@ -29,23 +29,15 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.GameArea = new System.Windows.Forms.Panel();
             this.GameTimer = new System.Windows.Forms.Timer(this.components);
             this.EnemyTimer = new System.Windows.Forms.Timer(this.components);
             this.CollisionTimer = new System.Windows.Forms.Timer(this.components);
             this.LabelScore = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.ButtonRestart = new System.Windows.Forms.Button();
+            this.GameArea = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.GameArea)).BeginInit();
             this.SuspendLayout();
-            // 
-            // GameArea
-            // 
-            this.GameArea.Location = new System.Drawing.Point(12, 12);
-            this.GameArea.Name = "GameArea";
-            this.GameArea.Size = new System.Drawing.Size(760, 537);
-            this.GameArea.TabIndex = 0;
-            this.GameArea.Paint += new System.Windows.Forms.PaintEventHandler(this.GameArea_Paint);
-            this.GameArea.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.GameArea_PreviewKeyDown);
             // 
             // GameTimer
             // 
@@ -92,31 +84,40 @@
             this.ButtonRestart.UseVisualStyleBackColor = true;
             this.ButtonRestart.Click += new System.EventHandler(this.ButtonRestart_Click_1);
             // 
+            // GameArea
+            // 
+            this.GameArea.Location = new System.Drawing.Point(12, 12);
+            this.GameArea.Name = "GameArea";
+            this.GameArea.Size = new System.Drawing.Size(760, 537);
+            this.GameArea.TabIndex = 4;
+            this.GameArea.TabStop = false;
+            this.GameArea.Paint += new System.Windows.Forms.PaintEventHandler(this.GameArea_Paint);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(884, 561);
+            this.Controls.Add(this.GameArea);
             this.Controls.Add(this.ButtonRestart);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.LabelScore);
-            this.Controls.Add(this.GameArea);
             this.Name = "Form1";
             this.Text = "Form1";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown_1);
+            ((System.ComponentModel.ISupportInitialize)(this.GameArea)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private Panel GameArea;
         private System.Windows.Forms.Timer GameTimer;
         private System.Windows.Forms.Timer EnemyTimer;
         private System.Windows.Forms.Timer CollisionTimer;
         private Label LabelScore;
         private Label label1;
         private Button ButtonRestart;
+        private PictureBox GameArea;
     }
 }

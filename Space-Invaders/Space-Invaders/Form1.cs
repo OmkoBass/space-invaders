@@ -5,11 +5,14 @@ namespace Space_Invaders
     public partial class Form1 : Form
     {
         Player Player;
+        readonly Bitmap playerSprite = Resources.player;
 
-        Enemy[,] enemies = new Enemy[3, 20];
+        readonly Enemy[,] enemies = new Enemy[3, 20];
         MoveDirection enemyDirection = MoveDirection.Left;
 
         Keys? key;
+
+        Bitmap enemySprite = Resources.enemy1;
 
         bool gameOver = false;
 
@@ -17,8 +20,6 @@ namespace Space_Invaders
         public Form1()
         {
             InitializeComponent();
-
-            this.DoubleBuffered = true;
 
             InitializeValues();
         }
@@ -28,21 +29,32 @@ namespace Space_Invaders
             score = 0;
             LabelScore.Text = $"Score: {score}";
 
-            Player = new Player(new Point(0, 0), new Size(24, 24));
+            Player = new Player(new Point(0, 0), new Size(48, 48), playerSprite);
 
             // Give the player the bottom left position
             Player.Position = new Point(GameArea.Left, GameArea.Height - (Player.Size.Height * 2));
 
             // Walk through all the enemies and give them
             // starting positions
+
+            var resourceManager = Resources.ResourceManager;
+            Random random = new Random();
+
             for (int i = 0; i < enemies.GetLength(0); i++)
             {
+                // random.Next(4) because i have 4 enemy sprites
+                // to choose from
+                int randomNumber = random.Next(1, 4);
+
+                // This should be checked for null values
+                enemySprite = (Bitmap)resourceManager.GetObject($"enemy{randomNumber}");
+
                 for (int j = 0; j < enemies.GetLength(1); j++)
                 {
                     // 32 is the size of the enemy + offset
                     // 50 is the offset so that the enemies
                     // are centered
-                    enemies[i, j] = new Enemy(new Point(50 + j * 32, i * 32));
+                    enemies[i, j] = new Enemy(new Point(50 + j * 32, i * 32), enemySprite);
                 }
             }
 
@@ -85,16 +97,13 @@ namespace Space_Invaders
 
         private void GameArea_Paint(object sender, PaintEventArgs e)
         {
-            using(Graphics g = e.Graphics)
-            {
-                g.FillRectangle(Brushes.LightGray, 0, 0, 760, 537);
+            e.Graphics.FillRectangle(Brushes.LightGray, 0, 0, 760, 537);
 
-                Player.Draw(g);
-                
-                foreach(Enemy enemy in enemies)
-                {
-                    enemy.Draw(g);
-                }
+            Player.Draw(e.Graphics);
+
+            foreach (Enemy enemy in enemies)
+            {
+                enemy.Draw(e.Graphics);
             }
         }
 
@@ -109,7 +118,8 @@ namespace Space_Invaders
         private void GameTimer_Tick(object sender, EventArgs e)
         {
             ControlPlayer();
-            Refresh();
+
+            GameArea.Invalidate();
         }
 
         private void ChangeEnemyDirection()
