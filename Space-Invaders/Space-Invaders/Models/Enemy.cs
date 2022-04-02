@@ -14,11 +14,14 @@ namespace Space_Invaders.Models
 
         internal Size Size = new(24, 24);
 
+        internal Bitmap Sprite { get; }
+
         private readonly int velocity = 12;
 
-        internal Enemy(Point Position)
+        internal Enemy(Point Position, Bitmap Sprite)
         {
             this.Position = Position;
+            this.Sprite = Sprite;
         }
 
         internal void Move(MoveDirection MoveDirection)
@@ -42,7 +45,7 @@ namespace Space_Invaders.Models
                 return;
             }
 
-            g.FillRectangle(Brushes.Green, new Rectangle(Position, Size));
+            g.DrawImage(this.Sprite, new Rectangle(Position, Size));
         }
     }
 }

@@ -11,15 +11,17 @@
     {
         internal Point Position { get; set; }
         internal Size Size { get; set; }
+        internal Bitmap Sprite { get; }
 
         private readonly int velocity = 10;
 
         internal readonly Projectile[] projectiles = new Projectile[20];
 
-        internal Player(Point Position, Size Size)
+        internal Player(Point Position, Size Size, Bitmap Sprite)
         {
             this.Position = Position;
             this.Size = Size;
+            this.Sprite = Sprite;
 
             for(int i = 0; i < projectiles.Length; i++)
             {
@@ -29,8 +31,7 @@
 
         internal void Draw(Graphics g)
         {
-            g.FillRectangle(Brushes.Black, new Rectangle(Position, Size));
-            g.FillRectangle(Brushes.Black, new Rectangle(Position.X + Size.Width / 3, Position.Y - Size.Height / 2, Size.Width / 4, Size.Height));
+            g.DrawImage(this.Sprite, new Rectangle(Position, Size));
 
             foreach(Projectile p in projectiles)
             {
