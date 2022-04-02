@@ -9,6 +9,11 @@
       "Space-Invaders/1.0.0": {
         "runtime": {
           "Space-Invaders.dll": {}
+        },
+        "resources": {
+          "aa/Space-Invaders.resources.dll": {
+            "locale": "aa"
+          }
         }
       }
     }
