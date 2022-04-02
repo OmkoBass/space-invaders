@@ -63,6 +63,16 @@ namespace Space_Invaders {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap background {
+            get {
+                object obj = ResourceManager.GetObject("background", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap enemy1 {
             get {
                 object obj = ResourceManager.GetObject("enemy1", resourceCulture);
@@ -86,16 +96,6 @@ namespace Space_Invaders {
         internal static System.Drawing.Bitmap enemy3 {
             get {
                 object obj = ResourceManager.GetObject("enemy3", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap enemy4 {
-            get {
-                object obj = ResourceManager.GetObject("enemy4", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
