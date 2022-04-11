@@ -11,13 +11,13 @@
     {
         internal Point Position { get; set; }
         internal Size Size { get; set; }
-        internal Bitmap Sprite { get; }
+        internal Bitmap Sprite { get; } = Resources.player;
 
         private readonly int velocity = 10;
 
         internal readonly Projectile[] projectiles = new Projectile[20];
 
-        internal Player(Point Position, Size Size, Bitmap Sprite)
+        internal Player(Point Position, Size Size)
         {
             this.Position = Position;
             this.Size = Size;
@@ -71,7 +71,9 @@
             {
                 if(p.Fired == false)
                 {
-                    p.Fire(Position);
+                    Point fixPointPosition = new Point(this.Position.X + this.Size.Width / 4, this.Position.Y);
+
+                    p.Fire(fixPointPosition);
                     break;
                 }
             }

@@ -5,15 +5,12 @@ namespace Space_Invaders
     public partial class Game : Form
     {
         Player Player;
-        readonly Bitmap playerSprite = Resources.player;
 
         readonly Enemy[,] enemies = new Enemy[3, 20];
         MoveDirection enemyDirection = MoveDirection.Left;
 
         Keys? key;
-
         readonly Bitmap backgroundSprite = Resources.background;
-        Bitmap enemySprite = Resources.enemy1;
 
         bool gameOver = false;
 
@@ -30,7 +27,7 @@ namespace Space_Invaders
             score = 0;
             LabelScore.Text = $"Score: {score}";
 
-            Player = new Player(new Point(0, 0), new Size(48, 48), playerSprite);
+            Player = new Player(new Point(0, 0), new Size(48, 48));
 
             // Give the player the bottom left position
             Player.Position = new Point(GameArea.Left, GameArea.Height - (Player.Size.Height * 2));
@@ -48,8 +45,6 @@ namespace Space_Invaders
                 int randomNumber = random.Next(1, 4);
 
                 // This should be checked for null values
-                enemySprite = (Bitmap)resourceManager.GetObject($"enemy{randomNumber}");
-
                 for (int j = 0; j < enemies.GetLength(1); j++)
                 {
                     int randomBomb = random.Next(1, 20);
@@ -260,7 +255,6 @@ namespace Space_Invaders
                         }
                     }
                 }
-                
             }
         }
 
