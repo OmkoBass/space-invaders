@@ -222,29 +222,36 @@ namespace Space_Invaders
                                             if(i == 0)
                                             {
                                                 enemies[i + 1, j].IsDead = true;
+                                                score++;
                                             }
                                             else if(i == enemies.GetLength(0) - 1)
                                             {
                                                 enemies[i - 1, j].IsDead = true;
+                                                score++;
                                             }
                                             else
                                             {
                                                 enemies[i + 1, j].IsDead = true;
                                                 enemies[i - 1, j].IsDead = true;
+                                                score += 2;
+
                                             }
 
                                             if (j == 0)
                                             {
                                                 enemies[i, j + 1].IsDead = true;
+                                                score++;
                                             }
                                             else if(j == enemies.GetLength(1) - 1)
                                             {
                                                 enemies[i, j - 1].IsDead = true;
+                                                score++;
                                             }
                                             else
                                             {
                                                 enemies[i, j + 1].IsDead = true;
                                                 enemies[i, j - 1].IsDead = true;
+                                                score += 2;
                                             }
                                         }
 
