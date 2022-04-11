@@ -52,10 +52,18 @@ namespace Space_Invaders
 
                 for (int j = 0; j < enemies.GetLength(1); j++)
                 {
+                    int randomBomb = random.Next(1, 20);
+                    bool shouldBeBomb = false;
+
+                    if(randomBomb == 1)
+                    {
+                        shouldBeBomb = true;
+                    }
+
                     // 32 is the size of the enemy + offset
                     // 50 is the offset so that the enemies
                     // are centered
-                    enemies[i, j] = new Enemy(new Point(50 + j * 32, i * 32), enemySprite);
+                    enemies[i, j] = new Enemy(new Point(50 + j * 32, i * 32), shouldBeBomb);
                 }
             }
 
@@ -197,18 +205,56 @@ namespace Space_Invaders
             {
                 if(projectile.Fired)
                 {
-                    foreach (Enemy enemy in enemies)
+                    for (int i = 0; i < enemies.GetLength(0); i++)
                     {
-                        if(enemy.IsDead == false)
+                        for (int j = 0; j < enemies.GetLength(1); j++)
                         {
-                            if(projectile.Position.X >= enemy.Position.X && projectile.Position.X <= enemy.Position.X + enemy.Size.Width)
-                            {
-                                if(projectile.Position.Y >= enemy.Position.Y && projectile.Position.Y <= enemy.Position.Y + enemy.Size.Height)
-                                {
-                                    projectile.Fired = false;
-                                    enemy.IsDead = true;
+                            Enemy enemy = enemies[i, j];
 
-                                    LabelScore.Text = $"Score: {++score}";
+                            if (enemy.IsDead == false)
+                            {
+                                if (projectile.Position.X >= enemy.Position.X && projectile.Position.X <= enemy.Position.X + enemy.Size.Width)
+                                {
+                                    if (projectile.Position.Y >= enemy.Position.Y && projectile.Position.Y <= enemy.Position.Y + enemy.Size.Height)
+                                    {
+                                        projectile.Fired = false;
+                                        enemy.IsDead = true;
+
+                                        // If it's a bomb enemy
+                                        // kill everyone around him
+                                        if(enemy.IsBomb)
+                                        {
+                                            if(i == 0)
+                                            {
+                                                enemies[i + 1, j].IsDead = true;
+                                            }
+                                            else if(i == enemies.GetLength(0) - 1)
+                                            {
+                                                enemies[i - 1, j].IsDead = true;
+                                            }
+                                            else
+                                            {
+                                                enemies[i + 1, j].IsDead = true;
+                                                enemies[i - 1, j].IsDead = true;
+                                            }
+
+                                            if (j == 0)
+                                            {
+                                                enemies[i, j + 1].IsDead = true;
+                                            }
+                                            else if(j == enemies.GetLength(1) - 1)
+                                            {
+                                                enemies[i, j - 1].IsDead = true;
+                                            }
+                                            else
+                                            {
+                                                enemies[i, j + 1].IsDead = true;
+                                                enemies[i, j - 1].IsDead = true;
+                                            }
+                                        }
+
+                                        LabelScore.Text = $"Score: {++score}";
+                                    }
                                 }
                             }
                         }

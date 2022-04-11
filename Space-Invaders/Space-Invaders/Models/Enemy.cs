@@ -12,16 +12,26 @@ namespace Space_Invaders.Models
 
         internal bool IsDead { get; set; } = false;
 
+        internal bool IsBomb { get; set; } = false;
+
         internal Size Size = new(24, 24);
 
-        internal Bitmap Sprite { get; }
+        internal Bitmap Sprite { get; } = Resources.enemy1;
 
         private readonly int velocity = 12;
 
-        internal Enemy(Point Position, Bitmap Sprite)
+        internal Enemy(Point Position, bool IsBomb)
         {
             this.Position = Position;
-            this.Sprite = Sprite;
+
+            // I just need to check if the enemy is a
+            // bomb enemy
+            // else the enemy will have the default
+            // sprite
+            if(this.IsBomb = IsBomb)
+            {
+                this.Sprite = Resources.enemyBomb;
+            }
         }
 
         internal void Move(MoveDirection MoveDirection)
