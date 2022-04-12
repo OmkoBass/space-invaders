@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Space_Invaders.Models
+﻿namespace Space_Invaders.Models
 {
     internal class Projectile
     {
         internal bool Fired { get; set; } = false;
+        internal bool IsBuffed { get; set; } = false;
         internal Point Position = new(0, 0);
-        private Size Size = new(4, 8);
+        internal Size Size = new(4, 8);
         private int velocity = 10;
 
         internal void Fire(Point PlayerPosition)
@@ -33,11 +27,56 @@ namespace Space_Invaders.Models
 
                 g.FillRectangle(Brushes.Red, new Rectangle(Position, Size));
             }
+        }
 
-            if(Position.Y <= 0 && Fired)
+        internal void Buff()
+        {
+            // Buffs the bullet, increasing it's size
+            this.Size = new Size(12, 24);
+        }
+
+        internal void Stop()
+        {
+            // Stops the bullet and resets it's position
+            this.Fired = false;
+            this.Size = new Size(4, 8);
+
+            Position = new(Position.X, Position.Y - velocity);
+        }
+
+        internal void OutOfBounds()
+        {
+            if(this.Position.Y < 0)
             {
-                Fired = false;
+                this.Stop();
             }
+        }
+
+        // Checks hit with enemies and buffs
+        internal bool CheckHit(EnemyBase enemy)
+        {
+            if (this.Position.X < enemy.Position.X + enemy.Size.Width &&
+                this.Position.X + this.Size.Width > enemy.Position.X &&
+                this.Position.Y < enemy.Position.Y + enemy.Size.Height &&
+                this.Size.Height + this.Position.Y > enemy.Position.Y)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        internal bool CheckHit(Buff buff)
+        {
+            if (this.Position.X < buff.Position.X + buff.Size.Width &&
+                this.Position.X + this.Size.Width > buff.Position.X &&
+                this.Position.Y < buff.Position.Y + buff.Size.Height &&
+                this.Size.Height + this.Position.Y > buff.Position.Y)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
