@@ -5,8 +5,9 @@ namespace Space_Invaders
     public partial class Game : Form
     {
         Player Player;
+        Buff Buff;
 
-        readonly Enemy[,] enemies = new Enemy[3, 20];
+        readonly EnemyBase[,] enemies = new EnemyBase[3, 20];
         MoveDirection enemyDirection = MoveDirection.Left;
 
         Keys? key;
@@ -26,11 +27,15 @@ namespace Space_Invaders
         {
             score = 0;
             LabelScore.Text = $"Score: {score}";
+            gameOver = false;
 
             Player = new Player(new Point(0, 0), new Size(48, 48));
+            Buff = new Buff(new Point(0, 0));
 
             // Give the player the bottom left position
             Player.Position = new Point(GameArea.Left, GameArea.Height - (Player.Size.Height * 2));
+
+            Buff.Position = new Point(GameArea.Left + GameArea.Width / 2, GameArea.Height - (Player.Size.Height * 4));
 
             // Walk through all the enemies and give them
             // starting positions
@@ -40,29 +45,85 @@ namespace Space_Invaders
 
             for (int i = 0; i < enemies.GetLength(0); i++)
             {
-                // random.Next(3) because i have 3 enemy sprites
+                // random.Next(4) because i have 3 enemy sprites
                 // to choose from
                 int randomNumber = random.Next(1, 4);
+                Bitmap? enemySprite = resourceManager.GetObject($"enemy{randomNumber}") as Bitmap;
 
-                // This should be checked for null values
+                if (enemySprite == null)
+                {
+                    enemySprite = Resources.enemy2;
+                }
+
                 for (int j = 0; j < enemies.GetLength(1); j++)
                 {
                     int randomBomb = random.Next(1, 20);
-                    bool shouldBeBomb = false;
-
-                    if(randomBomb == 1)
-                    {
-                        shouldBeBomb = true;
-                    }
 
                     // 32 is the size of the enemy + offset
                     // 50 is the offset so that the enemies
                     // are centered
-                    enemies[i, j] = new Enemy(new Point(50 + j * 32, i * 32), shouldBeBomb);
+                    if (randomBomb == 1)
+                    {
+                        // I need to find the nighbours after this loop
+                        // because all the enemies need to be
+                        // initialized before adding them
+
+                        List<EnemyBase> neighbours = new List<EnemyBase>();
+
+                        enemies[i, j] = new EnemyBomb(new Point(50 + (j * 32), i * 32), neighbours);
+                    } 
+                    else
+                    {
+                        enemies[i, j] = new EnemyRegular(new Point(50 + (j * 32), i * 32), enemySprite);
+                    }
+                }
+            }
+
+            for (int i = 0; i < enemies.GetLength(0); i++)
+            {
+                for(int j = 0; j < enemies.GetLength(1); j++)
+                {
+                    if(enemies[i,j].GetType() == typeof(EnemyBomb))
+                    {
+                        EnemyBomb enemyBomb = (EnemyBomb)enemies[i,j];
+
+                        List<EnemyBase> neighbours = new List<EnemyBase>();
+
+                        if (i == 0)
+                        {
+                            neighbours.Add(enemies[i + 1, j]);
+                        }
+                        else if (i == enemies.GetLength(0) - 1)
+                        {
+                            neighbours.Add(enemies[i - 1, j]);
+                        }
+                        else
+                        {
+                            neighbours.Add(enemies[i + 1, j]);
+                            neighbours.Add(enemies[i - 1, j]);
+                        }
+
+                        if (j == 0)
+                        {
+                            neighbours.Add(enemies[i, j + 1]);
+                        }
+                        else if (j == enemies.GetLength(1) - 1)
+                        {
+                            neighbours.Add(enemies[i, j - 1]);
+                        }
+                        else
+                        {
+                            neighbours.Add(enemies[i, j + 1]);
+                            neighbours.Add(enemies[i, j - 1]);
+                        }
+
+                        enemyBomb.Neighbours = neighbours;
+                    }
                 }
             }
 
             ButtonRestart.TabStop = false;
+            this.KeyPreview = true;
             GameArea.Focus();
 
             StartTimers();
@@ -84,7 +145,7 @@ namespace Space_Invaders
 
         private void ControlPlayer()
         {
-            switch(key)
+            switch (key)
             {
                 case Keys.A:
                     Player.Move(MoveDirection.Left);
@@ -104,8 +165,9 @@ namespace Space_Invaders
             e.Graphics.DrawImage(backgroundSprite, new Rectangle(0, 0, 760, 537));
 
             Player.Draw(e.Graphics);
+            Buff.Draw(e.Graphics);
 
-            foreach (Enemy enemy in enemies)
+            foreach (EnemyBase enemy in enemies)
             {
                 enemy.Draw(e.Graphics);
             }
@@ -113,15 +175,21 @@ namespace Space_Invaders
 
         private void MoveEnemies()
         {
-            foreach(Enemy enemy in enemies)
+            foreach (EnemyBase enemy in enemies)
             {
                 enemy.Move(enemyDirection);
             }
         }
 
+        private void MoveBuff()
+        {
+            Buff.Move();
+        }
+
         private void GameTimer_Tick(object sender, EventArgs e)
         {
             ControlPlayer();
+            MoveBuff();
 
             GameArea.Invalidate();
         }
@@ -170,7 +238,7 @@ namespace Space_Invaders
 
         private void EnemyTimer_Tick(object sender, EventArgs e)
         {
-            if(gameOver == true)
+            if (gameOver == true)
             {
                 StopTimers();
 
@@ -180,9 +248,14 @@ namespace Space_Invaders
             ChangeEnemyDirection();
             MoveEnemies();
 
+            foreach(Projectile p in Player.projectiles)
+            {
+                p.OutOfBounds();
+            }
+
             // Check if the enemies came too close
-            // if they did we're dead
-            if(enemies[enemies.GetLength(0) - 1, 0].Position.Y >= 400)
+            // if they are we're dead
+            if (enemies[enemies.GetLength(0) - 1, 0].Position.Y >= 400)
             {
                 gameOver = true;
             }
@@ -198,68 +271,27 @@ namespace Space_Invaders
             // and the score increments
             foreach (Projectile projectile in Player.projectiles)
             {
-                if(projectile.Fired)
+                if (projectile.Fired)
                 {
-                    for (int i = 0; i < enemies.GetLength(0); i++)
+                    foreach(EnemyBase enemy in enemies)
                     {
-                        for (int j = 0; j < enemies.GetLength(1); j++)
+                        if (enemy.IsDead == true)
                         {
-                            Enemy enemy = enemies[i, j];
-
-                            if (enemy.IsDead == false)
-                            {
-                                if (projectile.Position.X >= enemy.Position.X && projectile.Position.X <= enemy.Position.X + enemy.Size.Width)
-                                {
-                                    if (projectile.Position.Y >= enemy.Position.Y && projectile.Position.Y <= enemy.Position.Y + enemy.Size.Height)
-                                    {
-                                        projectile.Fired = false;
-                                        enemy.IsDead = true;
-
-                                        // If it's a bomb enemy
-                                        // kill everyone around him
-                                        if(enemy.IsBomb)
-                                        {
-                                            if(i == 0)
-                                            {
-                                                enemies[i + 1, j].IsDead = true;
-                                                score++;
-                                            }
-                                            else if(i == enemies.GetLength(0) - 1)
-                                            {
-                                                enemies[i - 1, j].IsDead = true;
-                                                score++;
-                                            }
-                                            else
-                                            {
-                                                enemies[i + 1, j].IsDead = true;
-                                                enemies[i - 1, j].IsDead = true;
-                                                score += 2;
-
-                                            }
-
-                                            if (j == 0)
-                                            {
-                                                enemies[i, j + 1].IsDead = true;
-                                                score++;
-                                            }
-                                            else if(j == enemies.GetLength(1) - 1)
-                                            {
-                                                enemies[i, j - 1].IsDead = true;
-                                                score++;
-                                            }
-                                            else
-                                            {
-                                                enemies[i, j + 1].IsDead = true;
-                                                enemies[i, j - 1].IsDead = true;
-                                                score += 2;
-                                            }
-                                        }
-
-                                        LabelScore.Text = $"Score: {++score}";
-                                    }
-                                }
-                            }
+                            continue;
                         }
+
+                        if (projectile.CheckHit(enemy))
+                        {
+                            projectile.Stop();
+                            enemy.Die();
+
+                            LabelScore.Text = $"Score: {++score}";
+                        }
+                    }
+
+                    if(projectile.CheckHit(Buff))
+                    {
+                        projectile.Buff();
                     }
                 }
             }
@@ -267,9 +299,9 @@ namespace Space_Invaders
 
         private bool CheckVictory()
         {
-            foreach(Enemy enemy in enemies)
+            foreach(EnemyBase enemy in enemies)
             {
-                if(enemy.IsDead == false)
+                if(!enemy.IsDead)
                 {
                     return false;
                 }
@@ -295,19 +327,9 @@ namespace Space_Invaders
             key = e.KeyCode;
         }
 
-        private void Form1_KeyUp_1(object sender, KeyEventArgs e)
-        {
-            key = null;
-        }
-
         private void ButtonRestart_Click_1(object sender, EventArgs e)
         {
             InitializeValues();
-        }
-
-        private void GameArea_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-        {
-            key = e.KeyCode;
         }
     }
 }
