@@ -22,6 +22,14 @@
         {
             if(Fired)
             {
+                if(IsBuffed)
+                {
+                    this.Size = new Size(12, 24);
+                } else
+                {
+                    this.Size = new Size(4, 8);
+                }
+
                 Point newPosition = new(Position.X, Position.Y - velocity);
                 Position = newPosition;
 
@@ -32,14 +40,14 @@
         internal void Buff()
         {
             // Buffs the bullet, increasing it's size
-            this.Size = new Size(12, 24);
+            this.IsBuffed = true;
         }
 
         internal void Stop()
         {
             // Stops the bullet and resets it's position
             this.Fired = false;
-            this.Size = new Size(4, 8);
+            this.IsBuffed = false;
 
             Position = new(Position.X, Position.Y - velocity);
         }
