@@ -1,4 +1,5 @@
 using Space_Invaders.Models;
+using System.Drawing.Drawing2D;
 
 namespace Space_Invaders
 {
@@ -16,6 +17,11 @@ namespace Space_Invaders
         bool gameOver = false;
 
         uint score = 0;
+
+        private GraphicsPath randomEffects = new GraphicsPath();
+
+        private readonly Pen blackPen = new Pen(Color.Red, 4);
+
         public Game()
         {
             InitializeComponent();
@@ -36,6 +42,8 @@ namespace Space_Invaders
             Player.Position = new Point(GameArea.Left, GameArea.Height - (Player.Size.Height * 2));
 
             Buff.Position = new Point(GameArea.Left + GameArea.Width / 2, GameArea.Height - (Player.Size.Height * 4));
+
+            randomEffects.AddRectangle(new Rectangle(new Point(GameArea.Left + GameArea.Width / 2, GameArea.Height - (Player.Size.Height * 4)), new Size(50, 50)));
 
             // Walk through all the enemies and give them
             // starting positions
@@ -71,7 +79,7 @@ namespace Space_Invaders
                         List<EnemyBase> neighbours = new List<EnemyBase>();
 
                         enemies[i, j] = new EnemyBomb(new Point(50 + (j * 32), i * 32), neighbours);
-                    } 
+                    }
                     else
                     {
                         enemies[i, j] = new EnemyRegular(new Point(50 + (j * 32), i * 32), enemySprite);
@@ -81,11 +89,11 @@ namespace Space_Invaders
 
             for (int i = 0; i < enemies.GetLength(0); i++)
             {
-                for(int j = 0; j < enemies.GetLength(1); j++)
+                for (int j = 0; j < enemies.GetLength(1); j++)
                 {
-                    if(enemies[i,j].GetType() == typeof(EnemyBomb))
+                    if (enemies[i, j].GetType() == typeof(EnemyBomb))
                     {
-                        EnemyBomb enemyBomb = (EnemyBomb)enemies[i,j];
+                        EnemyBomb enemyBomb = (EnemyBomb)enemies[i, j];
 
                         List<EnemyBase> neighbours = new List<EnemyBase>();
 
@@ -162,14 +170,17 @@ namespace Space_Invaders
 
         private void GameArea_Paint(object sender, PaintEventArgs e)
         {
-            e.Graphics.DrawImage(backgroundSprite, new Rectangle(0, 0, 760, 537));
+            Graphics g = e.Graphics;
 
-            Player.Draw(e.Graphics);
-            Buff.Draw(e.Graphics);
+            g.DrawImage(backgroundSprite, new Rectangle(0, 0, 760, 537));
+
+            Player.Draw(g);
+
+            Buff.Draw(g);
 
             foreach (EnemyBase enemy in enemies)
             {
-                enemy.Draw(e.Graphics);
+                enemy.Draw(g);
             }
         }
 
@@ -248,7 +259,7 @@ namespace Space_Invaders
             ChangeEnemyDirection();
             MoveEnemies();
 
-            foreach(Projectile p in Player.projectiles)
+            foreach (Projectile p in Player.projectiles)
             {
                 p.OutOfBounds();
             }
@@ -273,7 +284,7 @@ namespace Space_Invaders
             {
                 if (projectile.Fired)
                 {
-                    foreach(EnemyBase enemy in enemies)
+                    foreach (EnemyBase enemy in enemies)
                     {
                         if (enemy.IsDead == true)
                         {
@@ -289,7 +300,7 @@ namespace Space_Invaders
                         }
                     }
 
-                    if(projectile.CheckHit(Buff))
+                    if (projectile.CheckHit(Buff))
                     {
                         projectile.Buff();
                     }
@@ -299,9 +310,9 @@ namespace Space_Invaders
 
         private bool CheckVictory()
         {
-            foreach(EnemyBase enemy in enemies)
+            foreach (EnemyBase enemy in enemies)
             {
-                if(!enemy.IsDead)
+                if (!enemy.IsDead)
                 {
                     return false;
                 }
@@ -314,7 +325,7 @@ namespace Space_Invaders
         {
             CheckCollisions();
 
-            if(CheckVictory() == true)
+            if (CheckVictory() == true)
             {
                 StopTimers();
 
