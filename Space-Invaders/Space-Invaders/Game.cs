@@ -18,9 +18,24 @@ namespace Space_Invaders
 
         uint score = 0;
 
-        private GraphicsPath randomEffects = new GraphicsPath();
+        private int shakeScreen = 2;
+        private int shakeAngle = 2;
 
-        private readonly Pen blackPen = new Pen(Color.Red, 4);
+        private readonly Pen whitePen = new Pen(Color.White, 4);
+        private readonly Pen yellowPen = new Pen(Color.Yellow, 8);
+        private readonly Pen greenPen = new Pen(Color.Green, 8);
+        private readonly Pen redPen = new Pen(Color.Red, 8);
+        private readonly Pen purplePen = new Pen(Color.Purple, 8);
+
+        Effect effect1 = new Effect(new Point(25, 300));
+        Effect effect2 = new Effect(new Point(700, 350));
+        Effect effect3 = new Effect(new Point(25, 350));
+        Effect effect4 = new Effect(new Point(700, 300));
+
+        private int stringTimer = 4;
+
+        string animationsText = "These are animations";
+        Font font = new Font("Times New Roman", 18);
 
         public Game()
         {
@@ -38,13 +53,14 @@ namespace Space_Invaders
             Player = new Player(new Point(0, 0), new Size(48, 48));
             Buff = new Buff(new Point(0, 0));
 
+            whitePen.StartCap = LineCap.RoundAnchor;
+            whitePen.EndCap = LineCap.ArrowAnchor;
+
             // Give the player the bottom left position
             Player.Position = new Point(GameArea.Left, GameArea.Height - (Player.Size.Height * 2));
 
             Buff.Position = new Point(GameArea.Left + GameArea.Width / 2, GameArea.Height - (Player.Size.Height * 4));
-
-            randomEffects.AddRectangle(new Rectangle(new Point(GameArea.Left + GameArea.Width / 2, GameArea.Height - (Player.Size.Height * 4)), new Size(50, 50)));
-
+            
             // Walk through all the enemies and give them
             // starting positions
 
@@ -178,10 +194,35 @@ namespace Space_Invaders
 
             Buff.Draw(g);
 
+            effect1.Draw(g, yellowPen);
+            effect2.Draw(g, greenPen);
+            effect3.Draw(g, redPen);
+            effect4.Draw(g, purplePen);
+
+            if (stringTimer > 0)
+            {
+                // Hard coded the positions
+                // of the arrows and text
+                g.DrawLine(whitePen, new Point(GameArea.Width / 2 - 200, 315), new Point(GameArea.Width / 2 - 300, 315));
+                g.DrawLine(whitePen, new Point(GameArea.Width / 2 + 125, 315), new Point(GameArea.Width / 2 + 225, 315));
+                g.DrawString(animationsText, font, Brushes.White, new Point(GameArea.Width / 2 - 150, 300));
+            }
+
+            if (shakeScreen == 2)
+            {
+                g.RotateTransform(shakeAngle);
+            }
+            else if (shakeScreen == 1)
+            {
+                g.RotateTransform(-shakeAngle);
+            }
+
             foreach (EnemyBase enemy in enemies)
             {
                 enemy.Draw(g);
             }
+
+            g.ResetTransform();
         }
 
         private void MoveEnemies()
@@ -249,6 +290,18 @@ namespace Space_Invaders
 
         private void EnemyTimer_Tick(object sender, EventArgs e)
         {
+            if(stringTimer > 0)
+            {
+                stringTimer--;
+            }
+
+            if (shakeScreen == 0)
+            {
+                shakeScreen = 2;
+            } else {
+                shakeScreen--;
+            }
+
             if (gameOver == true)
             {
                 StopTimers();
