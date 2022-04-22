@@ -21,9 +21,8 @@
         {
             this.Position = Position;
             this.Size = Size;
-            this.Sprite = Sprite;
 
-            for(int i = 0; i < projectiles.Length; i++)
+            for (int i = 0; i < projectiles.Length; i++)
             {
                 projectiles[i] = new Projectile();
             }
@@ -33,7 +32,7 @@
         {
             g.DrawImage(this.Sprite, new Rectangle(Position, Size));
 
-            foreach(Projectile p in projectiles)
+            foreach (Projectile p in projectiles)
             {
                 p.Draw(g);
             }
@@ -50,7 +49,8 @@
 
                 Point newPosition = new(Position.X - velocity, Position.Y);
                 Position = newPosition;
-            } else if(moveDirection == MoveDirection.Right)
+            }
+            else if (moveDirection == MoveDirection.Right)
             {
                 if (Position.X >= 730)
                 {
@@ -69,7 +69,7 @@
             // If it is then find a new one
             foreach (Projectile p in projectiles)
             {
-                if(p.Fired == false)
+                if (p.Fired == false)
                 {
                     Point fixPointPosition = new Point(this.Position.X + this.Size.Width / 4, this.Position.Y);
 
